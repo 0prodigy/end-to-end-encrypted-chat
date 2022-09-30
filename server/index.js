@@ -1,12 +1,26 @@
-import { Server } from "socket.io";
+const cors = require("cors");
+const express = require("express");
+const app = express();
+const http = require("http").createServer(app);
+// enable cors
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
-const socket = new Server(5500);
+const socket = require("socket.io")(http);
 
+// store user data in memory { user: { user: "user", channel: "channel", publicKey: "publicKey" } }
 const user = {};
 
 // create a end-to-end encrypted channel
 socket.on("connection", (socket) => {
+  console.log("connected");
   socket.on("create", (data) => {
+    console.log(data, "creating user and channel");
     user[data.user] = data;
     // check if channel exists
     if (socket.adapter.rooms[data.channel]) {
@@ -32,5 +46,10 @@ socket.on("connection", (socket) => {
 
 // on message broadcast to other user in the channel
 socket.on("message", (data) => {
+  console.log(data);
   socket.to(data.channel).emit("message", data.message);
+});
+
+http.listen(5600, () => {
+  console.log("Running on http://localhost:5600");
 });

@@ -1,31 +1,36 @@
 <script type="ts">
   import { onMount } from "svelte";
-  import { writable } from "svelte/store";
-  import { io } from "socket.io-client";
-  import { generatePair } from "./crypto";
+  import { get, writable } from "svelte/store";
+  import socket from "./io";
+  import { encrypt, generateKeypair } from "./crypto";
 
   let input = "";
   let username = new Date().getTime();
-  const socket = io("http://localhost:3000");
 
   const messages = writable([]);
+  const newUserPublicKey = writable("");
+  const hamdleNewUser = (data) => {
+    newUserPublicKey.set(data.publicKey);
+  };
 
   onMount(() => {
-    socket.on("connection", () => {
-      const { publicKey, privateKey } = generatePair();
-      const user = {
-        user: username,
-        publicKey,
-        channel: "general",
-      };
-    });
-    socket.on("message", (msg) => {
-      messages.update((msgs) => [...msgs, msg]);
-    });
+    const publicKey = generateKeypair();
+    const userdata = {
+      user: username,
+      publicKey,
+      channel: "general",
+    };
+    socket.emit("create", userdata);
+  });
+  socket.on("nwuser", hamdleNewUser);
+  socket.on("message", (data) => {
+    messages.update((msgs) => [...msgs, data]);
   });
 
   function sendMessage() {
-    socket.emit("message", input);
+    if (!input) return;
+    if (!get(newUserPublicKey)) return;
+    socket.emit("message", encrypt(input, get(newUserPublicKey)));
     input = "";
   }
 </script>

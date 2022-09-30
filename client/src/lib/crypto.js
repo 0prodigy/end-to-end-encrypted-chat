@@ -1,36 +1,29 @@
-import crypto from "crypto";
+import sjcl from "sjcl";
 
-export const generatePair = () => {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-    modulusLength: 4096,
-    publicKeyEncoding: {
-      type: "pkcs1",
-      format: "pem",
-    },
-    privateKeyEncoding: {
-      type: "pkcs1",
-      format: "pem",
-      cipher: "aes-256-cbc",
-      passphrase: "end-to-end-encryption",
-    },
-  });
-  return { publicKey, privateKey };
-};
+let keypair = null;
 
-export const encrypt = (data, publicKey) => {
-  const buffer = Buffer.from(data);
-  const encrypted = crypto.publicEncrypt(publicKey, buffer);
-  return encrypted.toString("base64");
-};
+export function generateKeypair() {
+  keypair = sjcl.ecc.elGamal.generateKeys(256, 6);
 
-export const decrypt = (data, privateKey) => {
-  const buffer = Buffer.from(data, "base64");
-  const decrypted = crypto.privateDecrypt(
-    {
-      key: privateKey,
-      passphrase: "end-to-end-encryption",
-    },
-    buffer
+  return serializePublicKey(keypair.pub.get());
+}
+
+export function encrypt(content, publicKey) {
+  publicKey = unserializePublicKey(publicKey);
+  return sjcl.encrypt(publicKey, content);
+}
+
+export function decrypt(content) {
+  return sjcl.decrypt(keypair.sec, content);
+}
+
+function serializePublicKey(key) {
+  return sjcl.codec.base64.fromBits(key.x.concat(key.y));
+}
+
+function unserializePublicKey(key) {
+  return new sjcl.ecc.elGamal.publicKey(
+    sjcl.ecc.curves.c256,
+    sjcl.codec.base64.toBits(key)
   );
-  return decrypted.toString("utf8");
-};
+}

@@ -37,10 +37,10 @@
     magic-string "^0.26.3"
     svelte-hmr "^0.15.0"
 
-crypto@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
-  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
+cryptico-js@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/cryptico-js/-/cryptico-js-1.1.0.tgz#8b333e23aaddfce819fd2f5e49043f81397531d6"
+  integrity sha512-ODVGwsGIHOCfOYhM60uf3UvmGI7UR5K+Y7uoPfH8wRC0gd1pbWuEW5dR7qOZdSO5vLLORYi1G90gd22lGT/5Zw==
 
 debug@^4.3.4, debug@~4.3.1, debug@~4.3.2:
   version "4.3.4"
@@ -288,6 +288,11 @@ rollup@~2.78.0:
   integrity sha512-VeeCgtGi4P+o9hIg+xz4qQpRl6R401LWEXBmxYKOV4zlF82lyhgh2hTZnheFUbANE8l2A41F458iwj2vEYaXJg==
   optionalDependencies:
     fsevents "~2.3.2"
+
+sjcl@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/sjcl/-/sjcl-1.0.8.tgz#f2ec8d7dc1f0f21b069b8914a41a8f236b0e252a"
+  integrity sha512-LzIjEQ0S0DpIgnxMEayM1rq9aGwGRG4OnZhCdjx7glTaJtf4zRfpg87ImfjSJjoW9vKpagd82McDOwbRT5kQKQ==
 
 socket.io-client@^4.5.2:
   version "4.5.2"

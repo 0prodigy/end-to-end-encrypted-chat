@@ -1,6 +1,8 @@
 import ioClient from "socket.io-client";
-const ENDPOINT = "http://localhost:5500";
+const ENDPOINT = "ws://localhost:5600/";
 
-const socket = ioClient(ENDPOINT);
-
-export const io = socket;
+// create socket connection without polling
+const socket = ioClient(ENDPOINT, {
+  transports: ["websocket"],
+}).connect();
+export default socket;
